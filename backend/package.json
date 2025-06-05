@@ -1,0 +1,17 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Stiwart",
+  "license": "ISC",
+  "description": "Github Clone Backend",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "uuid": "^11.1.0",
+    "yargs": "^18.0.0"
+  }
+}

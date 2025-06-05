@@ -1,0 +1,55 @@
+const yargs = require("yargs"); //
+const { hideBin } = require("yargs/helpers"); //utility in yargs helps in reading args
+
+const { initRepo } = require("./controllers/init");
+const { addRepo } = require("./controllers/add");
+const { commitRepo } = require("./controllers/commit");
+const { pushRepo } = require("./controllers/push");
+const { pullRepo } = require("./controllers/pull");
+const { revertRepo } = require("./controllers/revert");
+
+yargs(hideBin(process.argv)) // Initialize yargs, argv taken form command, hideBin helps in parsing the arguments
+  .command("init", "Initialise a new repository", {}, initRepo) // Command name, description, parameters, actual logic/function when command is called which is in controllers init.js
+  .command(
+    "add <file>",
+    "Add a file to the repository",
+    (yargs) => {
+      yargs.positional("file", {
+        describe: "File to add to the staging area",
+        type: "string",
+      });
+    },
+    (argv) => { // When the add command is called, it takes a file "argument' (passed as argv) and calls the addRepo function with that file path
+      addRepo(argv.file);
+    }
+  )
+  .command(
+    "commit <message>",
+    "Commit the staged files",
+    (yargs) => {
+      yargs.positional("message", {
+        describe: "Commit message",
+        type: "string",
+      });
+    },
+    (argv) => {
+      commitRepo(argv.message);
+    }
+  )
+  .command("push", "Push commits to S3", {}, pushRepo)
+  .command("pull", "Pull commits from S3", {}, pullRepo)
+  .command(
+    "revert <commitID>",
+    "Revert to a specific commit",
+    (yargs) => {
+      yargs.positional("commitID", {
+        describe: "Comit ID to revert to",
+        type: "string",
+      });
+    },
+    (argv) => {
+      revertRepo(argv.commitID);
+    }
+  )
+  .demandCommand(1, "You need at least one command") // Require at least one command to be executed
+  .help().argv; // Display help information if --help is passed or if no command is provided 
