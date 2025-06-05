@@ -1,3 +1,6 @@
+//connection stablish with AWS S3 bucket
+// This file configures the AWS SDK to connect to an S3 bucket.
+
 const AWS = require("aws-sdk"); 
 
 AWS.config.update({ region: "ap-south-1" }); // Update the region to your desired AWS region( closer to audience)
