@@ -129,11 +129,62 @@ async function getUserProfile(req, res) {
 }
 
 async function updateUserProfile(req, res) {
-  res.send("Profile updated!");
+  const currentID = req.params.id; //which user profile to update--from url we need id parameter (e.g., /user/:id)
+  const { email, password } = req.body; //  Destructuring the request body to get email and password for updating the user profile
+
+  try { //
+    await connectClient();
+    const db = client.db("githubclone");
+    const usersCollection = db.collection("users");
+
+    //To update password
+    let updateFields = { email };
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      updateFields.password = hashedPassword;
+    }
+
+    // Find the user by ID (as new gen by mongodb)and update the specified fields
+    const result = await usersCollection.findOneAndUpdate( //if using mongoose package use findByIdAndUpdate() method
+      {
+        _id: new ObjectId(currentID),
+      },
+      { $set: updateFields },
+      { returnDocument: "after" } // returnDocument: "after" option to return the updated document after the update operation
+    );
+    if (!result.value) { //if user not found
+      return res.status(404).json({ message: "User not found!" }); //return count 
+    }
+
+    res.send(result.value); //updated user profile is sent in the response/frontend
+  } catch (err) {
+    console.error("Error during updating : ", err.message);
+    res.status(500).send("Server error!");
+  }
 }
 
 async function deleteUserProfile(req, res) {
-  res.send("Profile deleted!");
+  const currentID = req.params.id;
+
+  try {
+    await connectClient();
+    const db = client.db("githubclone");
+    const usersCollection = db.collection("users");
+
+    const result = await usersCollection.deleteOne({//if using mongoose package use findByIdAndDelete() method
+      _id: new ObjectId(currentID),
+    });
+
+    if (result.deleteCount == 0) { // If no user was deleted, return a 404 Not Found response
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    res.json({ message: "User Profile Deleted!" });
+  } catch (err) {
+    console.error("Error during updating : ", err.message);
+    res.status(500).send("Server error!");
+  }
 }
 
 module.exports = {
