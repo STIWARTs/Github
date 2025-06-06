@@ -62,7 +62,30 @@ async function signup(req, res) {
 }
 
 async function login(req, res) {
-  res.send("Logging in!");
+  const { email, password } = req.body; // Destructuring the request body to get email and password -- combination for login
+  try {
+    await connectClient();//connection stablish
+    const db = client.db("githubclone");
+    const usersCollection = db.collection("users");
+
+    const user = await usersCollection.findOne({ email }); //Find user if credentials are correct and store in user variable
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials!" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password); //Matching token -validity..user encrypted password with stored hashed password
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials!" });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { //If token is valid, then extended the expiresIn time
+      expiresIn: "1h",
+    });
+    res.json({ token, userId: user._id }); // Send the token and user ID in the response
+  } catch (err) {
+    console.error("Error during login : ", err.message);
+    res.status(500).send("Server error!");
+  }
 }
 
 // CRUD OPERATIONs
