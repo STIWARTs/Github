@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");// For authentication--token issued by server and stored in browser local storage or cookies having timestamp to live
 const bcrypt = require("bcryptjs"); // To bcrypt passwords before storing them in the database
-const { MongoClient } = require("mongodb"); // To perform CRUD operations on MongoDB
+const { MongoClient } = require("mongodb"); // To perform CRUD operations on MongoDB--Here using MongoDB native driver to connect to MongoDB and perform operations
 const dotenv = require("dotenv");
 var ObjectId = require("mongodb").ObjectId; // To convert string(id fetch form url) to ObjectId for MongoDB queries
 
@@ -165,7 +165,7 @@ async function updateUserProfile(req, res) {
 }
 
 async function deleteUserProfile(req, res) {
-  const currentID = req.params.id;
+  const currentID = req.params.id; 
 
   try {
     await connectClient();
