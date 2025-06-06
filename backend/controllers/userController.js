@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");// For authentication--token issued by serve
 const bcrypt = require("bcryptjs"); // To bcrypt passwords before storing them in the database
 const { MongoClient } = require("mongodb"); // To perform CRUD operations on MongoDB
 const dotenv = require("dotenv");
-var ObjectId = require("mongodb").ObjectId;
+var ObjectId = require("mongodb").ObjectId; // To convert string(id fetch form url) to ObjectId for MongoDB queries
 
 dotenv.config();//To use environment variables from .env file
 const uri = process.env.MONGODB_URI; // MongoDB connection URI from .env file
@@ -88,14 +88,44 @@ async function login(req, res) {
   }
 }
 
+
 // CRUD OPERATIONs
 async function getAllUsers(req, res) {
   //For Search Result - shows Repo list and user list
-  res.send("All users fetched!");
+  try {
+    await connectClient();
+    const db = client.db("githubclone");
+    const usersCollection = db.collection("users");
+
+    const users = await usersCollection.find({}).toArray(); //user fetch function to get all users from the "users" collection from mongoDB
+    res.json(users);//.toArrar() to manuallly convert response into js array---if not show error not getting response,,,-->giver res array of object
+  } catch (err) {
+    console.error("Error during fetching : ", err.message);
+    res.status(500).send("Server error!");
+  }
 }
 
 async function getUserProfile(req, res) {
-  res.send("Profile fetched!");
+  const currentID = req.params.id; // Extracting the user ID from the request parameters (from url wee need id parameter)(e.g., /user/:id) to fetch the profile of a specific user
+
+  try {
+    await connectClient();
+    const db = client.db("githubclone");
+    const usersCollection = db.collection("users");
+
+    const user = await usersCollection.findOne({//findOne() method available in mongoDB,,,while in mongoose there is findById() method--working same but diffent syntax as per package use
+      _id: new ObjectId(currentID), //provide _id constrains(auto gen in by mongodb), basis of finding user 
+    });//converting currentID(string) to ObjectId because MongoDB uses ObjectId for its _id field
+
+    if (!user) { // If no user is found with the given ID, return a 404 Not Found response
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    res.send(user);
+  } catch (err) {
+    console.error("Error during fetching : ", err.message);
+    res.status(500).send("Server error!");
+  }
 }
 
 async function updateUserProfile(req, res) {
