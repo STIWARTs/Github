@@ -32,7 +32,7 @@ async function deleteRepositoryById(req, res) {
 }
 
 module.exports = {
-  createRepository, //only authenticated user can access this route
+  createRepository, //only authenticated user can access this route -----> for restricting access we made middleware auth and authorize
   getAllRepositories,
   fetchRepositoryById, 
   fetchRepositoryByName, 
