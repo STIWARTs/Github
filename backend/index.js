@@ -6,7 +6,7 @@ const mongoose = require("mongoose"); //helps in connecting to MongoDB and for C
 const bodyParser = require("body-parser"); //reads the data/body form requests and parses it into a format that can be easily send to response used by the application, such as JSON(converts js to json or vice versa)
 const http = require("http"); //http module is used "to create an HTTP server" that can handle requests and responses
 const { Server } = require("socket.io"); //socket.io is a library that enables real-time, bidirectional communication between clients and servers over WebSockets or other protocols
-// const mainRouter = require("./routes/main.router");
+const mainRouter = require("./routes/main.router");
 
 const yargs = require("yargs"); //
 const { hideBin } = require("yargs/helpers"); //utility in yargs helps in reading args
@@ -95,11 +95,12 @@ function startServer() { //Server initialize / Start with express and within exp
 
   app.use(cors({ origin: "*" })); // Use CORS middleware to allow requests from any origin/url/location
 
-  app.get("/", (req, re) => { //to test the server is running--via thunder client or postman or browser
-    re.send("Welcome!");
-  });
+  // WRITING IN main.router.js
+  // app.get("/", (req, re) => { //to test the server is running--via thunder client or postman or browser
+  //   re.send("Welcome!");
+  // });
 
-  // app.use("/", mainRouter);
+  app.use("/", mainRouter);
 
 //SOCKET CREATION 
   let user = "test"; // Initialize a variable to store the user ID, defaulting to "test" (before any user joins/loggedin the room--after the user joins, it will be updated with the actual user ID)
