@@ -80,70 +80,84 @@ async function fetchRepositoryByName(req, res) {
 
 //ALL below 4's are accessed by the user who is logged in, so we need to check if the user is authenticated and authorized to access these routes
 async function fetchRepositoriesForCurrentUser(req, res) {
+  console.log(req.params);
+  const { userID } = req.params; //as user logged in, so we can get the user ID(and token as well are saved in local storage) from the request parameters
 
+  try {
+    const repositories = await Repository.find({ owner: userID }); //searching based on owner ID(user id) matches with the user ID in the database
+
+    if (!repositories || repositories.length == 0) { //if no repositories found for the user
+      return res.status(404).json({ error: "User Repositories not found!" });
+    }
+    console.log(repositories);
+    res.json({ message: "Repositories found!", repositories });
+  } catch (err) {
+    console.error("Error during fetching user repositories : ", err.message);
+    res.status(500).send("Server error");
+  }
 }
 
 async function updateRepositoryById(req, res) {
-//   const { id } = req.params;
-//   const { content, description } = req.body;
+  const { id } = req.params;
+  const { content, description } = req.body; //content is an array of strings, description is a string--only these two fields are can be possible to updated in the repository
 
-//   try {
-//     const repository = await Repository.findById(id);
-//     if (!repository) {
-//       return res.status(404).json({ error: "Repository not found!" });
-//     }
+  try { //logic
+    const repository = await Repository.findById(id);
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found!" });
+    }
+    // update values as repo exists
+    repository.content.push(content);//add new content to the existing content array
+    repository.description = description; //update the description of the repository //override
 
-//     repository.content.push(content);
-//     repository.description = description;
+    const updatedRepository = await repository.save();//save the updated repository to the database
 
-//     const updatedRepository = await repository.save();
-
-//     res.json({
-//       message: "Repository updated successfully!",
-//       repository: updatedRepository,
-//     });
-//   } catch (err) {
-//     console.error("Error during updating repository : ", err.message);
-//     res.status(500).send("Server error");
-//   }
+    res.json({
+      message: "Repository updated successfully!",
+      repository: updatedRepository,
+    });
+  } catch (err) {
+    console.error("Error during updating repository : ", err.message);
+    res.status(500).send("Server error");
+  }
 }
 
 async function toggleVisibilityById(req, res) { //for making a repo public or private
-//   const { id } = req.params;
+  const { id } = req.params;
 
-//   try {
-//     const repository = await Repository.findById(id);
-//     if (!repository) {
-//       return res.status(404).json({ error: "Repository not found!" });
-//     }
+  try {
+    const repository = await Repository.findById(id);
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found!" });
+    }
 
-//     repository.visibility = !repository.visibility;
+    repository.visibility = !repository.visibility; //as boolean value is used for visibility, so toggling it will change the visibility from public to private or vice versa
 
-//     const updatedRepository = await repository.save();
+    const updatedRepository = await repository.save();
 
-//     res.json({
-//       message: "Repository visibility toggled successfully!",
-//       repository: updatedRepository,
-//     });
-//   } catch (err) {
-//     console.error("Error during toggling visibility : ", err.message);
-//     res.status(500).send("Server error");
-//   }
+    res.json({
+      message: "Repository visibility toggled successfully!",
+      repository: updatedRepository,
+    });
+  } catch (err) {
+    console.error("Error during toggling visibility : ", err.message);
+    res.status(500).send("Server error");
+  }
 }
 
 async function deleteRepositoryById(req, res) {
-//   const { id } = req.params;
-//   try {
-//     const repository = await Repository.findByIdAndDelete(id);
-//     if (!repository) {
-//       return res.status(404).json({ error: "Repository not found!" });
-//     }
+  const { id } = req.params;
+  try {
+    const repository = await Repository.findByIdAndDelete(id); //delete the repository by its ID
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found!" });
+    }
 
-//     res.json({ message: "Repository deleted successfully!" });
-//   } catch (err) {
-//     console.error("Error during deleting repository : ", err.message);
-//     res.status(500).send("Server error");
-//   }
+    res.json({ message: "Repository deleted successfully!" });
+  } catch (err) {
+    console.error("Error during deleting repository : ", err.message);
+    res.status(500).send("Server error");
+  }
 }
 module.exports = {
   createRepository, //only authenticated user can access this route -----> for restricting access we made middleware auth and authorize
