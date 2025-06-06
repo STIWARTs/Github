@@ -38,62 +38,49 @@ async function createRepository(req, res) { //Taking the request and response ob
 }
 
 async function getAllRepositories(req, res) {
-//   try {
-//     const repositories = await Repository.find({})
-//       .populate("owner")
-//       .populate("issues");
+  try {
+    const repositories = await Repository.find({})//as mongoose is used to interact with MongoDB, Repository.find({})--directly implement in the model...(in mongodb find() method is used to retrieve documents from a collection) will return all the repositories in the database
+      .populate("owner") //ext obj //populate() -- for sirf owner id return n ho balki uska data return ho
+      .populate("issues"); //ext obj
 
-//     res.json(repositories);
-//   } catch (err) {
-//     console.error("Error during fetching repositories : ", err.message);
-//     res.status(500).send("Server error");
-//   }
+    res.json(repositories);
+  } catch (err) {
+    console.error("Error during fetching repositories : ", err.message);
+    res.status(500).send("Server error");
+  }
 }
 
 async function fetchRepositoryById(req, res) { 
-//   const { id } = req.params;
-//   try {
-//     const repository = await Repository.find({ _id: id })
-//       .populate("owner")
-//       .populate("issues");
+  const { id } = req.params;
+  try {
+    const repository = await Repository.find({ _id: id })
+      .populate("owner")
+      .populate("issues");
 
-//     res.json(repository);
-//   } catch (err) {
-//     console.error("Error during fetching repository : ", err.message);
-//     res.status(500).send("Server error");
-//   }
+    res.json(repository);
+  } catch (err) {
+    console.error("Error during fetching repository : ", err.message);
+    res.status(500).send("Server error"); 
+  }
 }
 
 async function fetchRepositoryByName(req, res) {
-//   const { name } = req.params;
-//   try {
-//     const repository = await Repository.find({ name })
-//       .populate("owner")
-//       .populate("issues");
+  const { name } = req.params;
+  try {
+    const repository = await Repository.find({ name })
+      .populate("owner")
+      .populate("issues");
 
-//     res.json(repository);
-//   } catch (err) {
-//     console.error("Error during fetching repository : ", err.message);
-//     res.status(500).send("Server error");
-//   }
+    res.json(repository);
+  } catch (err) {
+    console.error("Error during fetching repository : ", err.message);
+    res.status(500).send("Server error");
+  }
 }
 
+//ALL below 4's are accessed by the user who is logged in, so we need to check if the user is authenticated and authorized to access these routes
 async function fetchRepositoriesForCurrentUser(req, res) {
-//   console.log(req.params);
-//   const { userID } = req.params;
 
-//   try {
-//     const repositories = await Repository.find({ owner: userID });
-
-//     if (!repositories || repositories.length == 0) {
-//       return res.status(404).json({ error: "User Repositories not found!" });
-//     }
-//     console.log(repositories);
-//     res.json({ message: "Repositories found!", repositories });
-//   } catch (err) {
-//     console.error("Error during fetching user repositories : ", err.message);
-//     res.status(500).send("Server error");
-//   }
 }
 
 async function updateRepositoryById(req, res) {
