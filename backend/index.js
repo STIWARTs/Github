@@ -22,7 +22,7 @@ dotenv.config();
 
 yargs(hideBin(process.argv)) // Initialize yargs, argv taken form command, hideBin helps in parsing the arguments
 
-  .command("start", "Starts a new server", {}, startServer) // Command name, description, parameters, actual logic/function(startServer()) when command is called which is not in controllers...which is here in index.js--for backend server
+  .command("start", "Starts a new server", {}, startServer) // Command name, description, parameters, actual logic/function(startServer()) when command is called which is not in controllers...which is here in index.js--for backend server..///WE MADE A CUSTOM COMMAND THEREFORE NOT WORK WITH NPM----(WORK node index.js start)
 
     // Command based setup for the git-like functionality
   .command("init", "Initialise a new repository", {}, initRepo) // Command name, description, parameters, actual logic/function when command is called which is in controllers init.js
