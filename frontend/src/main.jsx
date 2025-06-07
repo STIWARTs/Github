@@ -1,10 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx' //not used in this file
 import './index.css'
-import App from './App.jsx'
+import { AuthProvider } from './authContext.jsx'
+// import ProjectRoutes from './Routes.jsx';
+// import { BrowserRouter as Router } from 'react-router-dom'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <AuthProvider> // Provide the AuthContext to the entire app
+    <Router> 
+      {/* <App /> */}
+      <ProjectRoutes />//This compo decides/controls which route user to go,,//To check if the user is authenticated and to handle routing
+    </Router>
+  </AuthProvider>
+);
