@@ -24,7 +24,7 @@ const Signup = () => { //
     try { 
       setLoading(true);//page loading state set to true when user clicks on signup button
       const res = await axios.post("http://localhost:3002/signup", {
-        email: email, //data proveided by user in the form as an object passed to backend
+        email: email, //data provided by user in the form as an object passed to backend
         password: password,
         username: username,
       });
@@ -113,7 +113,7 @@ const Signup = () => { //
             disabled={loading} //
             onClick={handleSignup}//
           >
-            {loading ? "Loading..." : "Signup"}//
+            {loading ? "Loading..." : "Signup"}
           </Button>
         </div>
 
