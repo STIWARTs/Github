@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 const Login = () => {
     // As user going to login, means user already signed up(/or it logged out), so we don't need to create new user, we just need to login the user by verifying his email and password and saves the userId and token in local storage, so that we can use it later to authenticate the user and access protected routes
-  // useEffect(() => {
+  // useEffect(() => {//logout functionality....copy to Profile.jsx
   //   localStorage.removeItem("token");
   //   localStorage.removeItem("userId");
   //   setCurrentUser(null);
