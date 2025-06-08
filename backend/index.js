@@ -1,7 +1,7 @@
 //packages
 const express = require("express");
 const dotenv = require("dotenv");
-const cors = require("cors"); //cors(for security reasons, use when creating custom servers) is a middleware that allows or restricts resources to be requested from another domain outside the domain from which the first resource was served
+const cors = require("cors"); //cors(for security reasons, use when creating custom servers) is a middleware that allows or restricts resources to be requested from another domain outside the domain from which the first resource was served // To allow cross-origin requests means to allow your frontend to communicate with your backend.
 const mongoose = require("mongoose"); //helps in connecting to MongoDB and for CRUD operations performed on the database
 const bodyParser = require("body-parser"); //reads the data/body form requests and parses it into a format that can be easily send to response used by the application, such as JSON(converts js to json or vice versa)
 const http = require("http"); //http module is used "to create an HTTP server" that can handle requests and responses
