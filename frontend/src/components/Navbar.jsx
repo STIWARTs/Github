@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";//For linking 2 diffent compo profile and create repository
 import "./navbar.css";
 
 const Navbar = () => {
